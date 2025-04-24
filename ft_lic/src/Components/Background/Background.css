@@ -1,0 +1,25 @@
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center center;
+    z-index: -1;
+  }
+  
+  /* Clasă specială pentru imaginile verticale, ca să tai partea de sus */
+  .background.portrait {
+    object-position: center top;
+  }
+  
+  /* animație fade-in */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .fade-in {
+    animation: fadeIn 500ms ease-in-out;
+  }
+  
