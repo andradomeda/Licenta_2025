@@ -1,48 +1,62 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../entities/user.js";
+import Volunteer from "../entities/volunteer.js";
 
 const router = express.Router();
 
-// POST /register - Înregistrare utilizator
+// POST /register - Înregistrare voluntar
 router.post("/register", async (req, res) => {
   try {
-    const { name, username, email, password, role, city } = req.body;
+    const {
+      type,
+      name,
+      email,
+      password,
+      phone_number,
+      city,
+      county,
+      sending_ngo
+    } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) return res.status(400).send("Emailul este deja folosit.");
+    const existingVolunteer = await Volunteer.findOne({ where: { email } });
+    if (existingVolunteer)
+      return res.status(400).send("Emailul este deja folosit.");
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
+
+    const newVolunteer = await Volunteer.create({
+      type,
       name,
-      username,
       email,
       password: hashedPassword,
-      role,
-      city
+      phone_number,
+      city,
+      county,
+      sending_ngo
+      // celelalte (has_paired_elder, is_active, date_joined) se setează automat
     });
 
-    res.status(201).json({ message: "Utilizator înregistrat cu succes!" });
+    res.status(201).json({ message: "Voluntar înregistrat cu succes!" });
   } catch (error) {
     console.error(error);
     res.status(500).send("Eroare la înregistrare");
   }
 });
 
-// POST /login - Autentificare
+// POST /login - Autentificare voluntar
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(400).send("Utilizator inexistent");
+    const volunteer = await Volunteer.findOne({ where: { email } });
+    if (!volunteer) return res.status(400).send("Voluntar inexistent");
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, volunteer.password);
     if (!match) return res.status(403).send("Parolă greșită");
 
     const accessToken = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: volunteer.id, type: volunteer.type },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1h" }
     );
@@ -50,7 +64,8 @@ router.post("/login", async (req, res) => {
     res.json({ accessToken });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Eroare la autentificare");
+    res.status(500).send(`Eroare la înregistrare: ${error.message}`);
+
   }
 });
 

@@ -1,16 +1,34 @@
 import db from "../dbConfig.js";
 import { Sequelize } from "sequelize";
 
-const Elder = db.define("Elder", {
+const Volunteer = db.define("Volunteer", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
+  type: {
+    type: Sequelize.ENUM("simple", "admin"),
+    allowNull: false
+  },
   name: {
     type: Sequelize.STRING,
     allowNull: false
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+    validate: { isEmail: true }
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  phone_number: {
+    type: Sequelize.STRING,
+    allowNull: true
   },
   city: {
     type: Sequelize.STRING,
@@ -20,43 +38,26 @@ const Elder = db.define("Elder", {
     type: Sequelize.STRING,
     allowNull: false
   },
-  street: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  birth_date: {
-    type: Sequelize.DATEONLY,
-    allowNull: false
-  },
-  description: {
-    type: Sequelize.TEXT,
-    allowNull: false
-  },
-  clothing_size: {
-    type: Sequelize.STRING,
-    allowNull: true
-  },
-  shoe_size: {
-    type: Sequelize.STRING,
-    allowNull: true
-  },
-  has_pair: {
+  has_paired_elder: {
     type: Sequelize.BOOLEAN,
-    allowNull: false,
     defaultValue: false
   },
-  joined_date: {
+  is_active: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: true
+  },
+  date_joined: {
     type: Sequelize.DATE,
     allowNull: false,
     defaultValue: Sequelize.NOW
   },
-  updated_at: {
-    type: Sequelize.DATE,
+  sending_ngo: {
+    type: Sequelize.STRING,
     allowNull: true
   }
 }, {
-  tableName: "elders",
-  timestamps: false
+  tableName: "volunteers",
+  timestamps: false // dacă nu vrei createdAt/updatedAt automat
 });
 
-export default Elder;
+export default Volunteer;
