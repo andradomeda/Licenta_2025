@@ -8,7 +8,7 @@ const router = express.Router();
 // POST /register - Înregistrare voluntar
 router.post("/register", async (req, res) => {
   try {
-    const {
+    let {
       type,
       name,
       email,
@@ -18,6 +18,11 @@ router.post("/register", async (req, res) => {
       county,
       sending_ngo
     } = req.body;
+
+    // Dacă nu s-a trimis 'type', îl setăm implicit aici
+    if (!type) {
+      type = "simple";
+    }
 
     const existingVolunteer = await Volunteer.findOne({ where: { email } });
     if (existingVolunteer)
@@ -34,13 +39,13 @@ router.post("/register", async (req, res) => {
       city,
       county,
       sending_ngo
-      // celelalte (has_paired_elder, is_active, date_joined) se setează automat
+      // has_paired_elder, is_active, date_joined rămân autocompletate de Sequelize
     });
 
     res.status(201).json({ message: "Voluntar înregistrat cu succes!" });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Eroare la înregistrare");
+    res.status(500).send(`Eroare la înregistrare: ${error.message}`);
   }
 });
 

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between; /* logo la stânga, meniul la dreapta */
   align-items: center; /* aliniere perfectă pe verticală */
-  padding: 20px 40px; /* spațiu frumos în jur */
+  padding: 10px 40px; /* spațiu frumos în jur */
   color: white; /* sau ce culoare vrei */
   font-family: 'Outfit', sans-serif;
 }

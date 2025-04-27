@@ -1,14 +1,24 @@
-import dotenv from "dotenv";
-dotenv.config();
+// server.js
 
 import express from "express";
-import authRoutes from "./routes/authRoutes.js"; // Doar o singură dată
+import cors from "cors";
+import dotenv from "dotenv";
+
+import authRoutes from "./routes/authRoutes.js";
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use("/users", authRoutes); // Ruta de autentificare
+// Middleware-uri
+app.use(cors()); // permite cereri din alte domenii (ex: frontend-ul pe 5173)
+app.use(express.json()); // ca să putem citi JSON-ul din request body
 
-app.listen(3000, () => {
-  console.log("Serverul rulează pe http://localhost:3000");
+// Rutele tale
+app.use("/users", authRoutes);
+
+// Pornire server
+app.listen(PORT, () => {
+  console.log(`✅ Serverul rulează pe http://localhost:${PORT}`);
 });

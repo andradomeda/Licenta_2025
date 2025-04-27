@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useGlobalContext } from "../../GlobalContext";
 import NavBar from '../../Components/NavBar/NavBar';
+import img5_oriz from '../../assets/img5_oriz.jpg'
 import axios from "axios";
 
 export default function Auth() {
@@ -44,107 +45,139 @@ export default function Auth() {
             }
         } catch (error) {
             console.error(error);
-            alert("Eroare la autentificare/înregistrare");
+            alert(`Eroare la înregistrare: ${error.message}`);
         }
     };
-
     return (
         <div>
-            <NavBar />
-            <div className="flex justify-center items-center min-h-screen bg-base-200">
-                <div className="w-full max-w-sm p-6 bg-base-100 rounded-box shadow-md">
-                    <h2 className="text-2xl font-bold text-center mb-4">
-                        {isSignUp ? "Register" : "Login"}
-                    </h2>
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-                        {isSignUp && (
-                            <>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Name"
-                                    className="input input-bordered w-full"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    name="phone_number"
-                                    placeholder="Phone Number"
-                                    className="input input-bordered w-full"
-                                    value={formData.phone_number}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    name="city"
-                                    placeholder="City"
-                                    className="input input-bordered w-full"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    name="county"
-                                    placeholder="County"
-                                    className="input input-bordered w-full"
-                                    value={formData.county}
-                                    onChange={handleChange}
-                                    required
-                                />
-                                <input
-                                    type="text"
-                                    name="sending_ngo"
-                                    placeholder="Sending NGO"
-                                    className="input input-bordered w-full"
-                                    value={formData.sending_ngo}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </>
-                        )}
-
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            className="input input-bordered w-full"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            className="input input-bordered w-full"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <button type="submit" className="btn btn-neutral w-full">
-                            {isSignUp ? "Register" : "Login"}
-                        </button>
-                    </form>
-
-                    <div className="text-center mt-4">
-                        {isSignUp ? "Ai deja cont?" : "Nu ai cont?"}{" "}
-                        <button
-                            type="button"
-                            className="btn btn-sm btn-link text-primary"
-                            onClick={() => setIsSignUp(!isSignUp)}
-                        >
-                            {isSignUp ? "Login" : "Register"}
-                        </button>
+          <img src={img5_oriz} alt="background" className="background" />
+          <NavBar />
+          <div className="flex justify-center items-start min-h-screen pt-24">
+            <div
+              className={`w-full ${isSignUp ? "max-w-4xl p-10" : "max-w-sm p-6"} bg-white/80 rounded-box shadow-md`}
+            >
+              <h2 className="text-2xl font-bold text-center mb-6">
+                {isSignUp ? "Register" : "Login"}
+              </h2>
+      
+              <form
+                onSubmit={handleSubmit}
+                className={`${isSignUp ? "grid grid-cols-2 gap-6" : "flex flex-col gap-4"}`}
+              >
+                {isSignUp ? (
+                  <>
+                    <div className="flex flex-col gap-4">
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Name"
+                        className="input input-bordered w-full"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                      <input
+                        type="text"
+                        name="phone_number"
+                        placeholder="Phone Number"
+                        className="input input-bordered w-full"
+                        value={formData.phone_number}
+                        onChange={handleChange}
+                        required
+                      />
+                      <input
+                        type="text"
+                        name="city"
+                        placeholder="City"
+                        className="input input-bordered w-full"
+                        value={formData.city}
+                        onChange={handleChange}
+                        required
+                      />
+                      <input
+                        type="text"
+                        name="county"
+                        placeholder="County"
+                        className="input input-bordered w-full"
+                        value={formData.county}
+                        onChange={handleChange}
+                        required
+                      />
                     </div>
-                </div>
+      
+                    <div className="flex flex-col gap-4">
+                      <input
+                        type="text"
+                        name="sending_ngo"
+                        placeholder="Sending NGO"
+                        className="input input-bordered w-full"
+                        value={formData.sending_ngo}
+                        onChange={handleChange}
+                        required
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        className="input input-bordered w-full"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        className="input input-bordered w-full"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                      />
+                      <button type="submit" className="btn btn-neutral w-full">
+                        Register
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      className="input input-bordered w-full"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      className="input input-bordered w-full"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button type="submit" className="btn btn-neutral w-full">
+                      Login
+                    </button>
+                  </>
+                )}
+              </form>
+      
+              <div className="text-center mt-6">
+                {isSignUp ? "Ai deja cont?" : "Nu ai cont?"}{" "}
+                <button
+                  type="button"
+                  className="btn btn-sm btn-link text-primary"
+                  onClick={() => setIsSignUp(!isSignUp)}
+                >
+                  {isSignUp ? "Login" : "Fă-ți cont"}
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-    );
+      );
+      
 }

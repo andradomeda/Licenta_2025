@@ -35,7 +35,6 @@ function HomePage() {
             setHeroCount={setHeroCount}
             playStatus={playStatus}
             />
-            <button class="btn btn-sm">Small</button>
         </div>
     );
 }

@@ -10,7 +10,8 @@ const Volunteer = db.define("Volunteer", {
   },
   type: {
     type: Sequelize.ENUM("simple", "admin"),
-    allowNull: false
+    allowNull: false,
+    defaultValue: "simple"
   },
   name: {
     type: Sequelize.STRING,
