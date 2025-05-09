@@ -1,64 +1,67 @@
+import { DataTypes } from "sequelize";
 import db from "../dbConfig.js";
-import { Sequelize } from "sequelize";
+import Elder from "./elder.js";
+import { Event } from "./event.js";
+import GrandparentConnection from "./grandparentConnection.js";
 
 const Volunteer = db.define("Volunteer", {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
   type: {
-    type: Sequelize.ENUM("simple", "admin"),
+    type: DataTypes.ENUM("simple", "admin"),
     allowNull: false,
     defaultValue: "simple"
   },
   name: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   email: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
     unique: true,
     validate: { isEmail: true }
   },
   password: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
-  phone_number: {
-    type: Sequelize.STRING,
+  phone: {
+    type: DataTypes.STRING,
     allowNull: true
   },
   city: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: true
   },
   county: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  status: {
+    type: DataTypes.ENUM("active", "inactive"),
+    defaultValue: "active"
   },
   has_paired_elder: {
-    type: Sequelize.BOOLEAN,
+    type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  is_active: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true
-  },
   date_joined: {
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: Sequelize.NOW
+    defaultValue: DataTypes.NOW
   },
   sending_ngo: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {
   tableName: "volunteers",
-  timestamps: false // dacă nu vrei createdAt/updatedAt automat
+  timestamps: false
 });
 
 export default Volunteer;

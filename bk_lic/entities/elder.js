@@ -1,57 +1,76 @@
 import db from "../dbConfig.js";
 import { Sequelize } from "sequelize";
+import { DataTypes } from 'sequelize';
+import Volunteer from './volunteer.js';
+import GrandparentConnection from "./grandparentConnection.js";
 
 const Elder = db.define("Elder", {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
     allowNull: false
   },
   name: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  phone: {
+    type: DataTypes.STRING,
     allowNull: false
   },
   city: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   county: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   street: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   birth_date: {
-    type: Sequelize.DATEONLY,
+    type: DataTypes.DATEONLY,
     allowNull: false
   },
   description: {
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   clothing_size: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true
   },
   shoe_size: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: true
   },
   has_pair: {
-    type: Sequelize.BOOLEAN,
+    type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
   },
   joined_date: {
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: Sequelize.NOW
+    defaultValue: DataTypes.NOW
   },
   updated_at: {
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  lat: {
+    type: DataTypes.FLOAT,
+    allowNull: true
+  },
+  lng: {
+    type: DataTypes.FLOAT,
+    allowNull: true
+  },
+  needs: {
+    type: DataTypes.TEXT,
     allowNull: true
   }
 }, {

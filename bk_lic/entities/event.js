@@ -1,50 +1,44 @@
-import db from "../dbConfig.js";
-import { Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
+import db from "../dbConfig.js"; // corect
+import Volunteer from "./volunteer.js"; // <--- asigură-te că importi modelul
 
 const Event = db.define("Event", {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true,
-    allowNull: false
+    autoIncrement: true
   },
   name: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   description: {
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
     allowNull: false
   },
-  start_date: {
-    type: Sequelize.DATEONLY,
+  startDate: {
+    type: DataTypes.DATE,
     allowNull: false
   },
-  end_date: {
-    type: Sequelize.DATEONLY,
-    allowNull: true  // poate fi null dacă e eveniment de o zi
-  },
-  creation_date: {
-    type: Sequelize.DATE,
-    allowNull: false,
-    defaultValue: Sequelize.NOW
+  endDate: {
+    type: DataTypes.DATE,
+    allowNull: true
   },
   status: {
-    type: Sequelize.ENUM("pending", "approved", "rejected"),
-    allowNull: false,
+    type: DataTypes.ENUM("pending", "accepted", "rejected"),
     defaultValue: "pending"
   },
-  approved_by: {
-    type: Sequelize.INTEGER,
-    allowNull: true,
+  volunteerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
-      model: "volunteers",
+      model: "volunteers", // numele tabelului
       key: "id"
-    }
+    },
+    onDelete: "CASCADE"
   }
 }, {
-  tableName: "events",
-  timestamps: false
+  tableName: "events"
 });
 
-export default Event;
+export { Event };

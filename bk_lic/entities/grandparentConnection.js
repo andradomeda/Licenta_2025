@@ -1,6 +1,7 @@
 import db from "../dbConfig.js";
 import { Sequelize } from "sequelize";
 
+
 const GrandparentConnection = db.define("GrandparentConnection", {
   id: {
     type: Sequelize.INTEGER,
@@ -13,6 +14,10 @@ const GrandparentConnection = db.define("GrandparentConnection", {
     allowNull: false
   },
   elder_id: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  event_id: {
     type: Sequelize.INTEGER,
     allowNull: false
   },

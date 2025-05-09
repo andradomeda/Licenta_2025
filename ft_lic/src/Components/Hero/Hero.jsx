@@ -1,6 +1,6 @@
 import './Hero.css'
 import React from 'react'
-import arrow_btn from '../../assets/arrow_btn.png'
+
 
 const Hero = ({ heroData, setHeroCount, heroCount, setPlayStatus, PlayStatus }) => {
   return (
@@ -9,11 +9,6 @@ const Hero = ({ heroData, setHeroCount, heroCount, setPlayStatus, PlayStatus }) 
         <div className="hero-text">
           <p>{heroData.text1}</p>
           <p>{heroData.text2}</p>
-        </div>
-
-        <div className="hero-explore">
-          <p>Afla mai multe</p>
-          {/* <img src={arrow_btn} alt="" /> */}
         </div>
       </div>
       <div className="hero-dot-play">

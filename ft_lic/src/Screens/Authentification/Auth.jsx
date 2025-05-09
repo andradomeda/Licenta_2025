@@ -1,12 +1,14 @@
 // src/Screens/Authentification/Auth.jsx
 import { useState } from "react";
 import { useGlobalContext } from "../../GlobalContext";
+import { useNavigate } from "react-router-dom";
 import NavBar from '../../Components/NavBar/NavBar';
 import img5_oriz from '../../assets/img5_oriz.jpg'
 import axios from "axios";
 
 export default function Auth() {
     const { login } = useGlobalContext();
+    const navigate = useNavigate();
     const [isSignUp, setIsSignUp] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -33,7 +35,6 @@ export default function Auth() {
                     type: "simple",
                     ...formData
                 });
-                alert("Cont creat cu succes!");
                 setIsSignUp(false);
             } else {
                 const res = await axios.post("http://localhost:3000/users/login", {
@@ -41,7 +42,7 @@ export default function Auth() {
                     password: formData.password
                 });
                 login(); 
-                alert("Autentificare reușită!");
+                navigate("/profile");
             }
         } catch (error) {
             console.error(error);
