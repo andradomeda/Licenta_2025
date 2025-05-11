@@ -3,7 +3,7 @@ import express from 'express';
 import { authenticateToken } from '../middleware/authToken.js';
 import { Event } from '../entities/event.js';
 import Volunteer from '../entities/volunteer.js';
-
+import VolunteerEvent from "../entities/volunteerEvent.js";
 
 const router = express.Router();
 
@@ -38,8 +38,6 @@ router.post('/', authenticateToken, async (req, res) => {
     if (!volunteer) {
       return res.status(400).json({ error: 'Voluntar inexistent' });
     }
-    console.log("Body primit:", req.body);
-
     const newEvent = await Event.create({
       name,
       description,
@@ -79,6 +77,29 @@ router.patch('/:id', authenticateToken, async (req, res) => {
     res.json(event);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+//creere legatura intre eveniment si participant
+router.post("/:id/participate", authenticateToken, async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    const volunteerId = req.user.id;
+
+    // verificăm dacă deja există participare
+    const alreadyJoined = await VolunteerEvent.findOne({
+      where: { volunteerId, eventId }
+    });
+
+    if (alreadyJoined) {
+      return res.status(400).json({ message: "Already participating in this event" });
+    }
+    console.log("body primit:", req.body);
+    await VolunteerEvent.create({ volunteerId, eventId });
+    res.status(201).json({ message: "Participation confirmed" });
+  } catch (err) {
+    console.error("Eroare participare:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

@@ -80,5 +80,14 @@ router.get('/event/:eventId', authenticateToken, async (req, res) => {
     }
   });
   
+  router.get('/', async (req, res) => {
+  try {
+    const connections = await GrandparentConnection.findAll();
+    res.json(connections);
+  } catch (error) {
+    console.error('Eroare la preluarea conexiunilor:', error);
+    res.status(500).json({ error: 'Eroare la server' });
+  }
+});
 
 export default router;

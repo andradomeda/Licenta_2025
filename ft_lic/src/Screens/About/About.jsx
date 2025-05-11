@@ -3,7 +3,7 @@ import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../Components/NavBar/NavBar';
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;

@@ -10,6 +10,7 @@ import donationRoutes from './routes/donationRoutes.js';
 import elderRoutes from "./routes/elderRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import connectionRoutes from './routes/connectionRoutes.js';
+import "./Associations/associations.js"; // execută toate asocierile
 
 
 

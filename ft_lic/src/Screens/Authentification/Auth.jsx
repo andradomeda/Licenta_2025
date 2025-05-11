@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useGlobalContext } from "../../GlobalContext";
 import { useNavigate } from "react-router-dom";
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../Components/NavBar/NavBar';
 import img5_oriz from '../../assets/img5_oriz.jpg'
 import axios from "axios";
 
@@ -41,10 +41,7 @@ export default function Auth() {
                     email: formData.email,
                     password: formData.password
                 });
-                console.log("Login response:", res.data); // 🔍 verifică ce conține răspunsul
-console.log("Token primit:", res.data.accessToken); // ✅
-login(res.data.accessToken);
-
+                login(res.data.accessToken);
                 navigate("/profile");
             }
         } catch (error) {

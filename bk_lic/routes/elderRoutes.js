@@ -14,6 +14,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const elderId = req.params.id;
+    const elder = await Elder.findByPk(elderId);
+
+    if (!elder) {
+      return res.status(404).json({ message: 'Elder not found' });
+    }
+
+    res.json(elder);
+  } catch (error) {
+    console.error('Eroare la găsirea elderului:', error);
+    res.status(500).json({ error: 'Eroare de server' });
+  }
+});
+
 
 // router.get('/locations', async (req, res) => {
 //     try {
