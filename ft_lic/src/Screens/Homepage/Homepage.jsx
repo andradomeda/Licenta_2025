@@ -58,25 +58,25 @@ function HomePage() {
             />
             
             <div className="action-buttons">
-                <button 
+                            <button
                     className="volunteer-btn"
                     onClick={() => window.location.href = '/auth'}
-                >
-                    Become a Volunteer
-                </button>
-                <button 
+                            >
+                                Become a Volunteer
+                            </button>
+                            <button
                     className="elder-help-btn"
                     onClick={() => setShowElderHelp(true)}
                 >
                     I'm an Elder and Need Help
-                </button>
-                <button 
+                                </button>
+                                <button
                     className="donate-btn"
                     onClick={() => setShowDonate(true)}
-                >
+                                >
                     Donate
-                </button>
-            </div>
+                                </button>
+                            </div>
 
             {showElderHelp && (
                 <div className="popup-overlay">
@@ -85,13 +85,13 @@ function HomePage() {
                         <p>Call us at: <strong>+40 123 456 789</strong></p>
                         <p>Or leave your phone number and we'll call you:</p>
                         <form onSubmit={handleElderHelpSubmit}>
-                            <input
+                                <input
                                 type="tel"
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 placeholder="Enter your phone number"
-                                required
-                            />
+                                    required
+                                />
                             <button type="submit">Submit</button>
                         </form>
                         <button onClick={() => setShowElderHelp(false)}>Close</button>
@@ -117,7 +117,7 @@ function HomePage() {
             
             <div className="copyright">
                 {heroData[heroCount].copyright}
-            </div>
+                </div>
         </div>
     );
 };

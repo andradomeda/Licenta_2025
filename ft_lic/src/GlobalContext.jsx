@@ -1,23 +1,45 @@
-// src/GlobalContext.js
-import { createContext, useContext, useState } from "react";
+// GlobalContext.js
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 
-// Creăm contextul
 const GlobalContext = createContext();
 
-// Provider-ul care va înconjura aplicația
 export function GlobalProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // false = utilizatorul nu este logat
+  const [volunteer, setVolunteer] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isAuthenticated, setIsAuthenticated] = useState(!!token);
 
-  const login = () => {
-    setIsAuthenticated(true);
+  useEffect(() => {
+    if (token) {
+      axios
+        .get("http://localhost:3000/volunteers/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => {
+          setVolunteer(res.data);
+          setIsAuthenticated(true);
+        })
+        .catch(err => {
+          console.error("Token invalid sau expirat", err);
+          logout();
+        });
+    }
+  }, [token]);
+
+  const login = (accessToken) => {
+    setToken(accessToken);
+    localStorage.setItem("token", accessToken);
   };
 
   const logout = () => {
+    setToken(null);
+    setVolunteer(null);
     setIsAuthenticated(false);
+    localStorage.removeItem("token");
   };
 
   return (
-    <GlobalContext.Provider value={{ isAuthenticated, login, logout }}>
+    <GlobalContext.Provider value={{ volunteer, isAuthenticated, token, login, logout }}>
       {children}
     </GlobalContext.Provider>
   );

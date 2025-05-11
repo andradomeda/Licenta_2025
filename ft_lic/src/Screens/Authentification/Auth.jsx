@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useGlobalContext } from "../../GlobalContext";
 import { useNavigate } from "react-router-dom";
-import NavBar from '../../Components/NavBar/NavBar';
+import Navbar from '../../Components/Navbar/Navbar';
 import img5_oriz from '../../assets/img5_oriz.jpg'
 import axios from "axios";
 
@@ -41,7 +41,10 @@ export default function Auth() {
                     email: formData.email,
                     password: formData.password
                 });
-                login(); 
+                console.log("Login response:", res.data); // 🔍 verifică ce conține răspunsul
+console.log("Token primit:", res.data.accessToken); // ✅
+login(res.data.accessToken);
+
                 navigate("/profile");
             }
         } catch (error) {
@@ -52,7 +55,7 @@ export default function Auth() {
     return (
         <div>
           <img src={img5_oriz} alt="background" className="background" />
-          <NavBar />
+         <Navbar />
           <div className="flex justify-center items-start min-h-screen pt-24">
             <div
               className={`w-full ${isSignUp ? "max-w-4xl p-10" : "max-w-sm p-6"} bg-white/80 rounded-box shadow-md`}

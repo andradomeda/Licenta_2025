@@ -4,6 +4,28 @@ import { authenticateToken } from '../middleware/authToken.js';
 
 const router = express.Router();
 
+router.get("/active", async (req, res) => {
+  try {
+    const activeVolunteers = await Volunteer.findAll({
+      where: { status: "active" }
+    });
+
+    res.status(200).json(activeVolunteers);
+  } catch (error) {
+    console.error("Eroare la preluarea voluntarilor activi:", error);
+    res.status(500).json({ message: "Eroare server", error });
+  }
+});
+
+router.get("/me", authenticateToken, async (req, res) => {
+  try {
+    const volunteer = await Volunteer.findByPk(req.user.id);
+    if (!volunteer) return res.status(404).json({ message: "Volunteer not found" });
+    res.json(volunteer);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 // Endpoint pentru a obține un voluntar după ID
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
@@ -56,5 +78,8 @@ router.patch('/:id', authenticateToken, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
 
 export default router;

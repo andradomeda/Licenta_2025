@@ -5,7 +5,7 @@ import Elder from '../entities/elder.js';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const elders = await Elder.findAll(); // fără include
         res.json(elders);

@@ -1,9 +1,9 @@
 import './NavBar.css';
 import { Link } from 'react-router-dom';
-import { useGlobalContext } from '../../GlobalContext'; // 🔥 Importăm contextul
+import { useGlobalContext } from '../../GlobalContext';
 
 const NavBar = () => {
-    const { isAuthenticated } = useGlobalContext(); // 🔥 Luăm dacă e autentificat
+    const { isAuthenticated } = useGlobalContext(); 
 
     return (
         <div className="nav">
@@ -14,7 +14,10 @@ const NavBar = () => {
             <li><Link to="/events">Evenimente</Link></li>
             <li><Link to="/auth">Autentificare</Link></li>
             {isAuthenticated && ( 
+              <div>
               <li><Link to="/profile">Profilul meu</Link></li>
+              <li><Link to="/general">General</Link></li>
+              </div>
             )}
           </ul>
         </div>

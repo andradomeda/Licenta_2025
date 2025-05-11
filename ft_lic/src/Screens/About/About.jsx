@@ -1,166 +1,170 @@
 import React, { useState, useEffect } from 'react';
-import './About.css';
-import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import axios from 'axios';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import NavBar from '../../Components/NavBar/NavBar';
+import Navbar from '../../Components/Navbar/Navbar';
 
-// Fix for default marker icons in Leaflet
+// Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
 const About = () => {
-    const [statistics, setStatistics] = useState({
-        totalElders: 0,
-        totalVolunteers: 0,
-        totalDonations: 0,
-        totalAmountRaised: 0,
-        startDate: '',
-        eventsCount: 0
-    });
+  const [stats, setStats] = useState({
+    totalEldersHelped: 0,
+    activeVolunteers: 0,
+    totalDonations: 0,
+    amountRaised: 0,
+    eventsOrganized: 0
+  });
+  
+  const [elders, setElders] = useState([]);
 
-    const [elderLocations, setElderLocations] = useState([]);
-    const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const eldersRes = await axios.get('/elders');
+        console.log("Elders fetched:", eldersRes.data);
+        setElders(eldersRes.data);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch statistics
-                const statsResponse = await fetch('http://localhost:3001/api/statistics');
-                if (statsResponse.ok) {
-                    const statsData = await statsResponse.json();
-                    setStatistics(statsData);
-                }
+        const volunteersRes = await axios.get('/volunteers/active');
+        console.log("Volunteers fetched:", volunteersRes.data);
 
-                // Fetch elder locations
-                const locationsResponse = await fetch('http://localhost:3001/api/elders/locations');
-                if (locationsResponse.ok) {
-                    const locationsData = await locationsResponse.json();
-                    setElderLocations(locationsData);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
+        const donationsRes = await axios.get('/donations/statistics');
+        console.log("Donations stats fetched:", donationsRes.data);
+
+        const eventsRes = await axios.get('/events/accepted');
+        console.log("Accepted events fetched:", eventsRes.data);
+
+        const activeVolunteers = volunteersRes.data.filter(v => v.status === 'active');
+        console.log("Active volunteers:", activeVolunteers);
+
+        const newStats = {
+          totalEldersHelped: eldersRes.data.length,
+          activeVolunteers: activeVolunteers.length,
+          totalDonations: donationsRes.data.totalDonations,
+          amountRaised: donationsRes.data.totalAmount,
+          eventsOrganized: eventsRes.data.length
         };
 
-        fetchData();
-    }, []);
+        console.table(newStats);
+        setStats(newStats);
+      } catch (error) {
+        console.error("Eroare la fetch statistics:", error);
+      }
+    };
 
-    if (loading) {
-        return <div className="loading">Loading...</div>;
-    }
+    fetchStats();
+  }, []);
 
-    return (
-        
-        <div className="about-container">
-            <NavBar />
-            <div className="about-header">
-                <h1>About Us</h1>
-                <p className="about-description">
-                    We are a dedicated team working to improve the lives of elders in Romania.
-                    Our platform connects volunteers with elders who need assistance,
-                    companionship, and support in their daily lives.
-                </p>
+  return (
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-center mb-12">About Us</h1>
+
+        {/* Statistics Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
             </div>
+            <div className="stat-title">Total Elders Helped</div>
+            <div className="stat-value text-primary">{stats.totalEldersHelped}</div>
+          </div>
 
-            <div className="statistics-section">
-                <h2>Our Impact</h2>
-                <div className="statistics-grid">
-                    <div className="stat-card">
-                        <h3>Total Elders Helped</h3>
-                        <p className="stat-number">{statistics.totalElders}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Active Volunteers</h3>
-                        <p className="stat-number">{statistics.totalVolunteers}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Total Donations</h3>
-                        <p className="stat-number">{statistics.totalDonations}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Amount Raised</h3>
-                        <p className="stat-number">{statistics.totalAmountRaised} RON</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Events Organized</h3>
-                        <p className="stat-number">{statistics.eventsCount}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Since</h3>
-                        <p className="stat-number">{new Date(statistics.startDate).getFullYear()}</p>
-                    </div>
-                </div>
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
+            <div className="stat-title">Active Volunteers</div>
+            <div className="stat-value text-secondary">{stats.activeVolunteers}</div>
+          </div>
 
-            <div className="map-section">
-                <h2>Elder Distribution in Romania</h2>
-                <div className="map-container">
-                    <MapContainer
-                        center={[45.9432, 24.9668]}
-                        zoom={7}
-                        style={{ height: '500px', width: '100%' }}
-                    >
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        />
-                        {elderLocations.map((location, index) => (
-                            <Marker key={index} position={[location.lat, location.lng]}>
-                                <Popup>
-                                    <div>
-                                        <h3>{location.city}</h3>
-                                        <p>Elders: {location.count}</p>
-                                    </div>
-                                </Popup>
-                                <Tooltip>
-                                    {location.city}: {location.count} elders
-                                </Tooltip>
-                            </Marker>
-                        ))}
-                    </MapContainer>
-                </div>
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-accent">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
+            <div className="stat-title">Total Donations</div>
+            <div className="stat-value text-accent">{stats.totalDonations}</div>
+          </div>
 
-            <div className="mission-section">
-                <h2>Our Mission</h2>
-                <p>
-                    Our mission is to create a supportive community where elders can receive
-                    the help and companionship they need, while volunteers can make a meaningful
-                    difference in their lives. We believe in the power of human connection
-                    and the importance of caring for our elders.
-                </p>
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-info">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
+            <div className="stat-title">Amount Raised</div>
+            <div className="stat-value text-info">${stats.amountRaised}</div>
+          </div>
 
-            <div className="values-section">
-                <h2>Our Values</h2>
-                <div className="values-grid">
-                    <div className="value-card">
-                        <h3>Compassion</h3>
-                        <p>We approach every interaction with empathy and understanding.</p>
-                    </div>
-                    <div className="value-card">
-                        <h3>Respect</h3>
-                        <p>We honor the dignity and life experience of every elder.</p>
-                    </div>
-                    <div className="value-card">
-                        <h3>Community</h3>
-                        <p>We believe in the power of bringing people together.</p>
-                    </div>
-                    <div className="value-card">
-                        <h3>Commitment</h3>
-                        <p>We are dedicated to making a lasting positive impact.</p>
-                    </div>
-                </div>
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-success">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
+            <div className="stat-title">Events Organized</div>
+            <div className="stat-value text-success">{stats.eventsOrganized}</div>
+          </div>
+
+          <div className="stat bg-base-100 shadow-xl rounded-lg">
+            <div className="stat-figure text-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="stat-title">Since</div>
+            <div className="stat-value text-warning">April 10, 2025</div>
+          </div>
         </div>
-    );
+
+        {/* Map Section */}
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title text-2xl mb-4">Elder Distribution in Romania</h2>
+            <div className="h-[500px] w-full">
+              <MapContainer
+                center={[45.9432, 24.9668]}
+                zoom={7}
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                {elders.map(elder => (
+                  <Marker
+                    key={elder.id}
+                    position={[elder.lat, elder.lng]}
+                  >
+                    <Popup>
+                      <div>
+                        <h3 className="font-bold">{elder.name}</h3>
+                        <p>Age: {elder.age}</p>
+                        <p>Needs: {elder.needs}</p>
+                      </div>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default About; 
+export default About;
