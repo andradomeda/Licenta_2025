@@ -20,7 +20,6 @@ const MyProfile = () => {
         }
         fetchProfile();
     }, [isAuthenticated]);
-
     const fetchProfile = async () => {
         try {
             console.log("📥 Token folosit pentru fetchProfile:", token);
@@ -35,22 +34,44 @@ const MyProfile = () => {
             ]);
 
             const myProfile = profileRes.data;
+            const allConnections = connectionsRes.data;
+
             console.log("👤 Profil primit:", myProfile);
-            console.log("🔗 Toate conexiunile:", connectionsRes.data);
+            console.log("🔗 Toate conexiunile:", allConnections);
 
-            const myElders = connectionsRes.data.filter(conn => {
-                return Number(conn.volunteer_id) === Number(myProfile.id);
+            const myConnections = allConnections.filter(conn => Number(conn.volunteer_id) === Number(myProfile.id));
+            console.log("✅ Conexiuni filtrate (doar ale mele):", myConnections);
+
+            // Ia detalii despre fiecare elder
+            const elderPromises = myConnections.map(conn =>
+                axios.get(`http://localhost:3000/elders/${conn.elder_id}`)
+            );
+
+            const elderResponses = await Promise.all(elderPromises);
+            const elderData = elderResponses.map(res => {
+                const {
+                    id, name, phone, city, county, birth_date,
+                    description, clothing_size, shoe_size, joined_date, needs
+                } = res.data;
+
+                const elder = {
+                    id, name, phone, city, county, birth_date,
+                    description, clothing_size, shoe_size, joined_date, needs
+                };
+
+                console.log("👵 Elder complet:", elder); // 🔍 LOG pentru verificare
+
+                return elder;
             });
-
-            console.log("✅ Conexiuni filtrate (doar ale mele):", myElders);
 
             setProfile(myProfile);
             setEditedProfile(myProfile);
-            setElders(myElders);
+            setElders(elderData);
         } catch (error) {
             console.error('❌ Eroare la fetchProfile:', error.response?.data || error.message);
         }
     };
+
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
@@ -110,7 +131,8 @@ const MyProfile = () => {
                 </div>
 
                 {/* Main Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="flex flex-col gap-8">
+
                     {/* Profile Information Card */}
                     <div className="card bg-base-100 shadow-xl">
                         <div className="card-body">
@@ -199,13 +221,17 @@ const MyProfile = () => {
                                 {elders.length > 0 ? (
                                     elders.map(elder => (
                                         <div key={elder.id} className="card bg-base-200">
-                                            <div className="card-body">
-                                                <h3 className="card-title">{elder.name}</h3>
-                                                <div className="stats stats-vertical shadow">
-                                                    <div className="stat"><div className="stat-title">Age</div><div className="stat-value text-lg">{elder.age}</div></div>
-                                                    <div className="stat"><div className="stat-title">Location</div><div className="stat-value text-lg">{elder.location}</div></div>
-                                                    <div className="stat"><div className="stat-title">Needs</div><div className="stat-value text-lg">{elder.needs}</div></div>
-                                                </div>
+                                            <div className="card-body space-y-2">
+                                                <h3 className="card-title text-xl">{elder.name || 'Not set'}</h3>
+                                                <p><strong>Phone:</strong> {elder.phone || 'Not set'}</p>
+                                                <p><strong>City:</strong> {elder.city|| 'Not set'}</p>
+                                                <p><strong>County:</strong> {elder.county || 'Not set'}</p>
+                                                <p><strong>Birth Date:</strong> {elder.birth_date || 'Not set'}</p>
+                                                <p><strong>Joined Date:</strong> {new Date(elder.joined_date).toLocaleDateString()}</p>
+                                                <p><strong>Description:</strong> {elder.description || 'Not set'}</p>
+                                                <p><strong>Clothing Size:</strong> {elder.clothing_size || 'Not set'}</p>
+                                                <p><strong>Shoe Size:</strong> {elder.shoe_size|| 'Not set'}</p>
+                                                <p><strong>Needs:</strong> {elder.needs || 'Not set'}</p>
                                             </div>
                                         </div>
                                     ))
